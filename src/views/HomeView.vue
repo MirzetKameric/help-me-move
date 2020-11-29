@@ -46,6 +46,9 @@
                             <div v-else-if="loading && !weatherInfo" class="spinner-border" role="status">
                                 <span class="sr-only">Loading...</span>
                             </div>
+                            <div class="alert alert-danger" v-else role="alert">
+                                There was an error fetching weather data!
+                            </div>
                         </div>
                     </div>
                 </div>

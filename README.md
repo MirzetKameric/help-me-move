@@ -1,5 +1,8 @@
 # help-me-move
 
+# NOTE!
+You need to create .env file based on .env.example
+
 ## Project setup
 ```
 npm install
@@ -23,6 +26,11 @@ npm run test:unit
 ### Lints and fixes files
 ```
 npm run lint
+```
+
+## Run with docker
+```
+if you want to run with docker, just call docker-compose up --build
 ```
 
 ### Customize configuration

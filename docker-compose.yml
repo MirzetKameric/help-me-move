@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  help-me-move:
+    container_name: help-me-move
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/src'
+      - '/node_modules'
+    ports:
+      - '8080:8080'
