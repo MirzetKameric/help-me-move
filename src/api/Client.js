@@ -1,18 +1,30 @@
 import axios from 'axios'
 
-export default class Client {
-    constructor(apiUrl) {
-        axios.defaults.baseURL = apiUrl
+class Client {
+    constructor() {
+        axios.defaults.baseURL = process.env.VUE_APP_WEATHER_API_URL
     }
 
     /**
      *
-     * @param url
+     * @param uri
      * @param options
-     * @returns {Promise<AxiosResponse<any>>}
      */
-    get (url, options) {
+    get (uri, options = {}) {
+        let url = uri
+        const queryParams = {
+            apikey: process.env.VUE_APP_WEATHER_API_KEY,
+            ...options.queryParams,
+        }
+
+        url += '?' + Object.entries(queryParams).map(e => e.join('=')).join('&');
+        if (options.queryParams) {
+            delete options.queryParams
+        }
+
         return axios.get(url, options)
     }
 }
+
+export default new Client()
 

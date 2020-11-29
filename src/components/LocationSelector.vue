@@ -4,7 +4,7 @@
             <slot></slot>
         </label>
         <select class="form-control" v-model="localValue" name="locationSelector" id="locationSelector" required>
-            <option v-for="location in locations" :key="location" :value="location">{{ location }}</option>
+            <option v-for="location in locations" :key="location.name" :value="location.locationKey">{{ location.name }}</option>
         </select>
     </div>
 </template>

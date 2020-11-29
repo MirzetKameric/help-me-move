@@ -1,4 +1,3 @@
-import CONFIG from '@root/config'
 import client from '@/api/Client'
 
 export default {
@@ -6,8 +5,8 @@ export default {
         this.$vue = app
         this.$options = options
 
-        this.$vue.prototype.$wApi = new client(CONFIG.API.WEATHER.URL)
-        this.$vue.prototype.$fApi = new client(CONFIG.API.FLIGHT.URL)
+        app.prototype.$weatherApi = client
+        // this.$vue.prototype.$fApi = new client(CONFIG.API.FLIGHT.URL)
 
         this.initFilters()
         this.initDirectives()
