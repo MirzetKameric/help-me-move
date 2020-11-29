@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { jsonToQueryString } from "@/utils/helpers";
 
 class Client {
     constructor() {
@@ -17,7 +18,7 @@ class Client {
             ...options.queryParams,
         }
 
-        url += '?' + Object.entries(queryParams).map(e => e.join('=')).join('&');
+        url += '?' + jsonToQueryString(queryParams);
         if (options.queryParams) {
             delete options.queryParams
         }
