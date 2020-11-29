@@ -143,6 +143,7 @@ export default {
         },
         getFlightsInfo () {
             let url = CONFIG.API.FLIGHT.ROUTES.FLIGHTS
+            // @TODO: All this can be selectable by user
             const options = {
                 fly_from: `city:${this.locationFrom.cityCode}`,
                 fly_to: `city:${this.locationTo.cityCode}`,
