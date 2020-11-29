@@ -15,14 +15,14 @@
             </div>
         </form>
         <hr>
-        <div class="mb-5">
-            <h3 class="mt-2 mb-3" v-if="weatherInfo || flightsInfo">Helpful info for moving to {{ locationTo.name }}</h3>
+        <div class="mb-5" v-if="Object.keys(draft).length">
+            <h3 class="mt-2 mb-3" v-if="weatherInfo || flightsInfo">Helpful info for moving to {{ draft.locationTo.name }}</h3>
             <div class="row">
                 <div class="col-6">
-                    <div class="card" v-if="weatherInfo">
+                    <div class="card">
                         <div class="card-body">
-                            <h5>Weather in {{ locationTo.name }}</h5>
-                            <ul class="list-group">
+                            <h5>Weather in {{ draft.locationTo.name }}</h5>
+                            <ul class="list-group" v-if="weatherInfo">
                                 <li class="list-group-item">
                                     {{ weatherInfo.Headline.Text }}
                                 </li>
@@ -43,16 +43,22 @@
                                     </li>
                                 </template>
                             </ul>
+                            <div v-else-if="loading && !weatherInfo" class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-6">
-                    <div class="card" v-if="flightsInfo">
+                    <div class="card">
                         <div class="card-body">
-                            <h5>Flights from {{ locationFrom.name }} to {{ locationTo.name }}</h5>
-                            <ul class="list-group">
+                            <h5>Flights from {{ draft.locationFrom.name }} to {{ draft.locationTo.name }}</h5>
+                            <ul class="list-group" v-if="flightsInfo">
                                 <flight-info class="list-group-item" v-for="flight in flightsInfo.data" :key="flight.id" :flight="flight" />
                             </ul>
+                            <div v-else-if="loading && !flightsInfo" class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -94,6 +100,7 @@ export default {
             weatherInfo: null,
             flightsInfo: null,
             loading: false,
+            draft: {}
         }
     },
     computed: {
@@ -111,12 +118,15 @@ export default {
             promises.push(this.getWeatherInfo())
             promises.push(this.getFlightsInfo())
 
+            this.$set(this.draft, 'locationFrom', JSON.parse(JSON.stringify(this.locationFrom)))
+            this.$set(this.draft, 'locationTo', JSON.parse(JSON.stringify(this.locationTo)))
+
             Promise.all(promises).finally(() => {
                 this.loading = false
             })
         },
         getWeatherInfo () {
-            this.$set(this, 'weatherInfo', {"Headline":{"EffectiveDate":"2020-11-30T07:00:00+01:00","EffectiveEpochDate":1606716000,"Severity":5,"Text":"Fog will affect the area Monday morning","Category":"fog","EndDate":"2020-11-30T13:00:00+01:00","EndEpochDate":1606737600,"MobileLink":"http://m.accuweather.com/en/hu/budapest/187423/extended-weather-forecast/187423?lang=en-us","Link":"http://www.accuweather.com/en/hu/budapest/187423/daily-weather-forecast/187423?lang=en-us"},"DailyForecasts":[{"Date":"2020-11-29T07:00:00+01:00","EpochDate":1606629600,"Temperature":{"Minimum":{"Value":27,"Unit":"F","UnitType":18},"Maximum":{"Value":39,"Unit":"F","UnitType":18}},"Day":{"Icon":7,"IconPhrase":"Cloudy","HasPrecipitation":false},"Night":{"Icon":35,"IconPhrase":"Partly cloudy","HasPrecipitation":false},"Sources":["AccuWeather"],"MobileLink":"http://m.accuweather.com/en/hu/budapest/187423/daily-weather-forecast/187423?day=1&lang=en-us","Link":"http://www.accuweather.com/en/hu/budapest/187423/daily-weather-forecast/187423?day=1&lang=en-us"}]})
+            this.$set(this, 'weatherInfo', null)
             const url = CONFIG.API.WEATHER.ROUTES.FORECASTS.DAILY.DAY1.replace('{locationKey}', this.locationTo.locationKey)
             return new Promise((resolve, reject) => {
                 this.$weatherApi.get(url).then(( {data }) => {
@@ -141,6 +151,7 @@ export default {
             }
 
             url += '?' + jsonToQueryString(options)
+            this.$set(this, 'flightsInfo', null)
             return new Promise((resolve, reject) => {
                 this.$flightApi.get(url).then(({ data }) => {
                     this.$set(this, 'flightsInfo', data)
