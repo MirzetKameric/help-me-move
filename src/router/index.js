@@ -11,7 +11,7 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: load('Home'),
+    component: load('HomeView'),
     meta: {
       unguarded: true
     }
