@@ -14,7 +14,11 @@ export default {
         this.initPlugins()
     },
 
-    initFilters() {},
+    initFilters() {
+        this.$vue.filter('celsius', function (value) {
+            return ((value - 32)/1.8).toFixed(2)
+        })
+    },
     initDirectives() {},
     initMixins() {},
     initPlugins() {}

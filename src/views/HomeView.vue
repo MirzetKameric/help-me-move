@@ -7,19 +7,52 @@
                     <location-selector v-model="locationFrom" :locations="locations">Where do you live?</location-selector>
                 </div>
                 <div class="col-5">
-                    <location-selector v-model="locationTo" :locations="locations">Where do you live?</location-selector>
+                    <location-selector v-model="locationTo" :locations="locations">Where do you want to live?</location-selector>
                 </div>
                 <div class="col-2">
                     <button type="submit" class="btn btn-dark btn-explore">Explore</button>
                 </div>
             </div>
         </form>
-        <div class="row">
-            <div class="col">
-                <pre>{{ weatherInfo }}</pre>
-            </div>
-            <div class="col">
-                <pre>{{ flightsInfo }}</pre>
+        <hr>
+        <div class="mb-5">
+            <h3 class="mt-2 mb-3">Helpful info for moving to Budapest</h3>
+            <div class="row">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>{{ weatherInfo.Headline.Text }}</h5>
+                            <ul class="list-group">
+                                <li class="list-group-item" v-if="weatherInfo.Headline.Category">
+                                    Category: <strong>{{ weatherInfo.Headline.Category }}</strong>
+                                </li>
+                                <li class="list-group-item" v-if="weatherInfo.Headline.Severity">
+                                    Severity: <span class="badge badge-pill badge-primary">{{ weatherInfo.Headline.Severity }}</span>
+                                </li>
+                                <template v-for="(forecast, index) in weatherInfo.DailyForecasts">
+                                    <li class="list-group-item" :key="`min-${index}`">
+                                        Minimum temperature:
+                                        <strong>{{ forecast.Temperature.Minimum.Value | celsius }}&#176;C</strong>
+                                    </li>
+                                    <li class="list-group-item" :key="`max-${index}`">
+                                        Maximum temperature:
+                                        <strong>{{ forecast.Temperature.Maximum.Value | celsius }}&#176;C</strong>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Flights from Amsterdam to Budapest</h5>
+                            <ul class="list-group">
+                                <flight-info class="list-group-item" v-for="flight in flightsInfo.data" :key="flight.id" :flight="flight" />
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -30,9 +63,10 @@ import moment from 'moment';
 import { jsonToQueryString } from "@/utils/helpers";
 import CONFIG from '@root/config'
 import LocationSelector from "@/components/LocationSelector";
+import FlightInfo from "@/components/flight/Info"
 export default {
     name: 'HomeView',
-    components: { LocationSelector },
+    components: { LocationSelector, FlightInfo },
     data () {
         return {
             locations: [
