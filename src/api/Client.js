@@ -23,6 +23,7 @@ class Client {
             delete options.queryParams
         }
 
+        axios.defaults.baseURL = process.env.VUE_APP_WEATHER_API_URL
         return axios.get(url, options)
     }
 }

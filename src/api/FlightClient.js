@@ -12,6 +12,7 @@ class FlightClient {
      * @returns {Promise<AxiosResponse<any>>}
      */
     get (url, options = {}) {
+        axios.defaults.baseURL = process.env.VUE_APP_FLIGHT_API_URL
         return axios.get(url, options)
     }
 }
